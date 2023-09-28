@@ -10,11 +10,11 @@ fn main() {
     println!("Result Part 1: {:?}", trees);
 
     // Part 2
-    let slopes = vec![(1, 1), (3, 1), (5, 1), (7, 1), (1, 2)];
+    let slopes = [(1, 1), (3, 1), (5, 1), (7, 1), (1, 2)];
     let trees = slopes
         .iter()
         .map(|s| count_trees(&map, *s))
-        .fold(1, |acc, t| acc * t);
+        .product::<usize>();
     println!("Result Part 2: {:?}", trees);
 }
 

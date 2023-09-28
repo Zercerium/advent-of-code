@@ -37,9 +37,9 @@ where
         }
     }
 
-    pub fn append_row(&mut self, mut items: &mut Vec<T>) {
+    pub fn append_row(&mut self, items: &mut Vec<T>) {
         assert_eq!(self.row_length, items.len());
-        self.map.append(&mut items);
+        self.map.append(items);
     }
 
     pub fn set_x_torus(&mut self) {
@@ -56,7 +56,7 @@ where
     {
         let mut x: usize = p.x.into() - self.start_index;
         if self.x_torus {
-            x = x % self.row_length
+            x %= self.row_length
         };
         assert!(x < self.row_length);
         x + (p.y.into() - self.start_index) * self.row_length
