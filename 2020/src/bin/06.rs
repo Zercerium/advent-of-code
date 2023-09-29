@@ -1,5 +1,6 @@
 use std::collections::HashSet;
 
+// Day 6: Custom Customs
 fn main() {
     let file = aoc_util::read_input_file(2020, 6);
     let sol = solver1(&file);

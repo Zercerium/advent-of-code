@@ -1,3 +1,4 @@
+// Day 5: Binary Boarding
 fn main() {
     let file = aoc_util::read_input_file(2020, 5);
     let sol = solver1(&file);

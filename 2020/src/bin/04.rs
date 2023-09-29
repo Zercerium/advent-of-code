@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 
+// Day 4: Passport Processing
 fn main() {
     let file = aoc_util::read_input_file(2020, 4);
     let sol = solver1(&file);
