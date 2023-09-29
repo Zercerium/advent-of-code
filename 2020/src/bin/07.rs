@@ -77,12 +77,12 @@ fn solver2(s: &str) -> usize {
             let mut sum = 1;
             graph.neighbors(nx).for_each(|n| {
                 let weight = graph.edge_weight(graph.find_edge(nx, n).unwrap()).unwrap();
-                println!(
-                    "{} {} {}",
-                    graph[n],
-                    weight,
-                    nodes.iter().filter(|(_, v)| **v == n).next().unwrap().0
-                );
+                // println!(
+                //     "{} {} {}",
+                //     graph[n],
+                //     weight,
+                //     nodes.iter().filter(|(_, v)| **v == n).next().unwrap().0
+                // );
                 sum += graph[n] * weight;
             });
             graph[nx] = sum;
