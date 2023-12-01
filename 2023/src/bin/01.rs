@@ -13,9 +13,24 @@ fn main() {
     let res: u32 = file
         .lines()
         .map(|line| {
-            let first = line.chars().find_map(|c| c.to_digit(10)).unwrap();
-            let last = line.chars().rev().find_map(|c| c.to_digit(10)).unwrap();
-            first * 10 + last
+            // let first = line.chars().find_map(|c| c.to_digit(10)).unwrap();
+            // let last = line.chars().rev().find_map(|c| c.to_digit(10)).unwrap();
+            let first = line
+                .as_bytes()
+                .iter()
+                .filter_map(|c| c.checked_sub(b'0'))
+                .find(|&c| (c < 10))
+                .unwrap() as u32
+                * 10;
+            let last = line
+                .as_bytes()
+                .iter()
+                .rev()
+                .filter_map(|c| c.checked_sub(b'0'))
+                .find(|&c| (c < 10))
+                .unwrap() as u32;
+
+            first + last
         })
         .sum();
     let duration = start.elapsed();
@@ -27,19 +42,18 @@ fn main() {
     let start = Instant::now();
     let res: u32 = file
         .lines()
-        .map(|line| {
-            let line_bytes = line.as_bytes();
-
-            let first = line_bytes
+        .map(|line| line.as_bytes())
+        .map(|bytes| {
+            let first = bytes
                 .iter()
                 .enumerate()
-                .find_map(|(index, _)| find_first_number(&line_bytes[index..]));
+                .find_map(|(index, _)| find_first_number(&bytes[index..]));
 
-            let last = line_bytes
+            let last = bytes
                 .iter()
                 .enumerate()
                 .rev()
-                .find_map(|(index, _)| find_last_number(&line_bytes[..=index]));
+                .find_map(|(index, _)| find_last_number(&bytes[..=index]));
 
             first.unwrap() * 10 + last.unwrap()
         })
