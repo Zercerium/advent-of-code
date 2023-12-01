@@ -1,8 +1,15 @@
+use std::time::Instant;
+
+const NUMBERS: [&[u8]; 9] = [
+    b"one", b"two", b"three", b"four", b"five", b"six", b"seven", b"eight", b"nine",
+];
+
 // Day 1: Trebuchet?!
 fn main() {
     let file = aoc_util::read_input_file(2023, 1);
 
     // Part 1
+    let start = Instant::now();
     let res: u32 = file
         .lines()
         .map(|line| {
@@ -13,106 +20,57 @@ fn main() {
             first * 10 + last
         })
         .sum();
+    let duration = start.elapsed();
+    println!("Time elapsed in Part 1 is: {:?}", duration);
 
     println!("Result Part 1: {:?}", res);
 
     // Part 2
+    let start = Instant::now();
     let res: u32 = file
         .lines()
         .map(|line| {
-            // println!("{}", line);
-            let mut first = None;
-            let mut ll = line.to_string();
-            while first.is_none() {
-                first = find_first_number(&ll);
-                ll = ll.chars().skip(1).collect::<String>();
-                // println!("{:#?}", first)
-            }
+            let line_bytes = line.as_bytes();
 
-            let mut last = None;
-            let mut ll = line.to_string();
-            while last.is_none() {
-                last = find_last_number(&ll);
-                ll.pop();
-            }
+            let first = line_bytes
+                .iter()
+                .enumerate()
+                .find_map(|(index, _)| find_first_number(&line_bytes[index..]));
 
-            // println!("first: {}, second: {}", first.unwrap(), last.unwrap());
+            let last = line_bytes
+                .iter()
+                .enumerate()
+                .rev()
+                .find_map(|(index, _)| find_last_number(&line_bytes[..=index]));
+
             first.unwrap() * 10 + last.unwrap()
         })
         .sum();
+    let duration = start.elapsed();
+    println!("Time elapsed in Part 2 is: {:?}", duration);
     println!("Result Part 2: {:?}", res)
 }
 
-fn find_first_number(s: &str) -> Option<u32> {
-    // println!("{}", s);
-    let first = s.chars().next().unwrap().to_digit(10);
-    if let Some(first) = first {
-        return Some(first);
+fn find_first_number(s: &[u8]) -> Option<u32> {
+    let first = s.first().unwrap() - b'0';
+    if first < 10 {
+        return Some(first as u32);
     }
 
-    if s.starts_with("one") {
-        return Some(1);
-    }
-    if s.starts_with("two") {
-        return Some(2);
-    }
-    if s.starts_with("three") {
-        return Some(3);
-    }
-    if s.starts_with("four") {
-        return Some(4);
-    }
-    if s.starts_with("five") {
-        return Some(5);
-    }
-    if s.starts_with("six") {
-        return Some(6);
-    }
-    if s.starts_with("seven") {
-        return Some(7);
-    }
-    if s.starts_with("eight") {
-        return Some(8);
-    }
-    if s.starts_with("nine") {
-        return Some(9);
-    }
-    None
+    NUMBERS
+        .into_iter()
+        .enumerate()
+        .find_map(|(index, number)| s.starts_with(number).then(|| index as u32 + 1))
 }
 
-fn find_last_number(s: &str) -> Option<u32> {
-    let first = s.chars().rev().next().unwrap().to_digit(10);
-
-    if let Some(first) = first {
-        return Some(first);
+fn find_last_number(s: &[u8]) -> Option<u32> {
+    let first = s.last().unwrap() - b'0';
+    if first < 10 {
+        return Some(first as u32);
     }
 
-    if s.ends_with("one") {
-        return Some(1);
-    }
-    if s.ends_with("two") {
-        return Some(2);
-    }
-    if s.ends_with("three") {
-        return Some(3);
-    }
-    if s.ends_with("four") {
-        return Some(4);
-    }
-    if s.ends_with("five") {
-        return Some(5);
-    }
-    if s.ends_with("six") {
-        return Some(6);
-    }
-    if s.ends_with("seven") {
-        return Some(7);
-    }
-    if s.ends_with("eight") {
-        return Some(8);
-    }
-    if s.ends_with("nine") {
-        return Some(9);
-    }
-    None
+    NUMBERS
+        .into_iter()
+        .enumerate()
+        .find_map(|(index, number)| s.ends_with(number).then(|| index as u32 + 1))
 }
