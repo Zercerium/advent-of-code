@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["2020", "aoc_util"]
+members = ["2023", "2020", "aoc_util"]
 
 [workspace.dependencies]
 aoc_util = { path = "./aoc_util" }
