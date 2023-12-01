@@ -13,10 +13,8 @@ fn main() {
     let res: u32 = file
         .lines()
         .map(|line| {
-            let first = line.chars().find(|c| c.is_digit(10)).unwrap();
-            let first = first.to_digit(10).unwrap();
-            let last = line.chars().rev().find(|c| c.is_digit(10)).unwrap();
-            let last = last.to_digit(10).unwrap();
+            let first = line.chars().find_map(|c| c.to_digit(10)).unwrap();
+            let last = line.chars().rev().find_map(|c| c.to_digit(10)).unwrap();
             first * 10 + last
         })
         .sum();
