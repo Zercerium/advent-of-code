@@ -49,11 +49,11 @@ fn parse_subset(s: &str) -> View {
 }
 
 fn game_valid(game: &Game) -> Option<u32> {
-    let valid = game
+    let invalid = game
         .views
         .iter()
         .find(|v| v.blue > 14 || v.green > 13 || v.red > 12);
-    if valid.is_none() {
+    if invalid.is_none() {
         Some(game.id)
     } else {
         None

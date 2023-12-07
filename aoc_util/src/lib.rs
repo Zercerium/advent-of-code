@@ -5,7 +5,7 @@ pub mod map;
 /// Read the input file for the given year and day.
 /// Will look for the file in the directory specified by the AOC_PATH environment variable
 /// or fall back to ../aoc_input
-/// Current year will be appendend to the path.
+/// Current year will be appended to the path.
 /// The file is expected to be named dayXX.txt where XX is the day number.
 pub fn read_input_file(year: u16, day: u8) -> String {
     let path = assemble_file_path(year, day);

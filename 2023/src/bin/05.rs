@@ -1,6 +1,6 @@
 // Day 5: If You Give A Seed A Fertilizer
 
-use std::ops::Range;
+use std::{ops::Range, time::Instant};
 
 #[derive(Debug)]
 struct Map {
@@ -17,9 +17,10 @@ struct BMap {
 
 fn main() {
     let file = aoc_util::read_input_file(2023, 5);
+    let start = Instant::now();
     let (seeds, maps) = parse(&file);
 
-    let min = seeds
+    let min1 = seeds
         .iter()
         .map(|seed| {
             maps.iter().fold(*seed, |acc, map| {
@@ -34,9 +35,9 @@ fn main() {
         })
         // .inspect(|i| println!("{}", i))
         .min();
-    println!("Part 1: {:#?}", min.unwrap());
 
     // Part 2
+    // let start = Instant::now();
     let seeds = seeds
         .chunks(2)
         .map(|c| c[0]..c[0] + c[1])
@@ -128,6 +129,9 @@ fn main() {
         .map(|range| range.start)
         // .inspect(|i| println!("{}", i))
         .min();
+    let duration = start.elapsed();
+    println!("Time elapsed in Part 2 is: {:?}", duration);
+    println!("Part 1: {:#?}", min1.unwrap());
     println!("Part 2: {:#?}", min.unwrap());
 }
 

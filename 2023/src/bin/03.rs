@@ -1,4 +1,4 @@
-//
+// Day 3: Gear Ratios
 
 use std::collections::{HashMap, HashSet};
 

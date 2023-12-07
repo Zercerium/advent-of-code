@@ -1,4 +1,4 @@
-// Day 5: If You Give A Seed A Fertilizer
+// Day 6: Wait For It
 
 fn main() {
     let file = aoc_util::read_input_file(2023, 6);
@@ -33,8 +33,9 @@ fn main() {
     dbg!(&input);
     let distance = input[1] as f64;
     let duration = input[0] as f64;
-    let x1 = (1. / 2.) * (duration - f64::sqrt(duration.powi(2) - 4. * distance));
-    let x2 = (1. / 2.) * (duration + f64::sqrt(duration.powi(2) - 4. * distance));
+    let root = f64::sqrt(duration.powi(2) - 4. * distance);
+    let x1 = (1. / 2.) * (duration - root);
+    let x2 = (1. / 2.) * (duration + root);
     let x1 = x1.ceil() as usize;
     let x2 = x2.floor() as usize;
     println!("Part 2: {}", x2 - x1 + 1);
