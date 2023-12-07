@@ -41,23 +41,12 @@ enum HandType {
     FiveOfAKind,
 }
 
-fn card_to_value(c: char) -> u8 {
+fn card_to_value(c: char, j_is_joker: bool) -> u8 {
     match c {
         '2'..='9' => c.to_digit(10).unwrap() as u8,
         'T' => 10,
+        'J' if j_is_joker => 1,
         'J' => 11,
-        'Q' => 12,
-        'K' => 13,
-        'A' => 14,
-        _ => panic!("Invalid card: {}", c),
-    }
-}
-
-fn card_to_value_with_joker(c: char) -> u8 {
-    match c {
-        '2'..='9' => c.to_digit(10).unwrap() as u8,
-        'T' => 10,
-        'J' => 1,
         'Q' => 12,
         'K' => 13,
         'A' => 14,
@@ -68,7 +57,7 @@ fn card_to_value_with_joker(c: char) -> u8 {
 fn hand_to_hand_type(cards: &Vec<u8>) -> HandType {
     let mut map = HashMap::new();
     for card in cards {
-        let count = map.entry(card).or_insert(0);
+        let count = map.entry(card).or_insert(0 as u8);
         *count += 1;
     }
     match map.len() {
@@ -99,7 +88,7 @@ fn hand_to_hand_type_with_joker(cards: &Vec<u8>) -> HandType {
     let joker = 5 - cards.len();
     let mut map = HashMap::new();
     for card in &cards {
-        let count = map.entry(card).or_insert(0);
+        let count = map.entry(card).or_insert(0 as u8);
         *count += 1;
     }
     match map.len() {
@@ -133,57 +122,60 @@ fn hand_to_hand_type_with_joker(cards: &Vec<u8>) -> HandType {
 fn main() {
     let file = aoc_util::read_input_file(2023, 7);
     let start = Instant::now();
-    let mut hands = file
-        .lines()
-        .map(|line| {
-            let (hand, bid) = line.split_once(" ").unwrap();
-            let bid = bid.parse::<u16>().unwrap();
-            let cards = hand.chars().map(card_to_value).collect::<Vec<_>>();
-            let hand_type = hand_to_hand_type(&cards);
-            Hand {
-                cards,
-                bid,
-                hand_type,
-            }
-        })
-        .collect::<Vec<_>>();
+
+    let parse_hand = |file: &str, with_joker| {
+        let hand_convert = match with_joker {
+            true => hand_to_hand_type_with_joker,
+            false => hand_to_hand_type,
+        };
+        file.lines()
+            .map(|line| {
+                let (hand, bid) = line.split_once(" ").unwrap();
+                let bid = bid.parse::<u16>().unwrap();
+                let cards = hand
+                    .chars()
+                    .map(|c| card_to_value(c, with_joker))
+                    .collect::<Vec<_>>();
+                let hand_type = hand_convert(&cards);
+                Hand {
+                    cards,
+                    bid,
+                    hand_type,
+                }
+            })
+            .collect::<Vec<_>>()
+    };
+
+    let total_winnings = |hands: &Vec<Hand>| -> usize {
+        hands
+            .iter()
+            .enumerate()
+            .map(|(i, hand)| hand.bid as usize * (i + 1))
+            .sum()
+    };
+
+    let duration = start.elapsed();
+    println!("Functions: {:?}", duration);
+    // Part 1
+    let mut hands = parse_hand(&file, false);
+    let duration = start.elapsed();
+    println!("Parse 1: {:?}", duration);
     hands.sort_unstable();
-    // dbg!(hands);
-    let total_winnings: usize = hands
-        .iter()
-        .enumerate()
-        .map(|(i, hand)| hand.bid as usize * (i + 1))
-        .sum();
+    let duration = start.elapsed();
+    println!("Sort 1: {:?}", duration);
+    let res1 = total_winnings(&hands);
+    let duration = start.elapsed();
+    println!("Calc 1: {:?}", duration);
 
     // Part 2
-    let mut hands = file
-        .lines()
-        .map(|line| {
-            let (hand, bid) = line.split_once(" ").unwrap();
-            let bid = bid.parse::<u16>().unwrap();
-            let cards = hand
-                .chars()
-                .map(card_to_value_with_joker)
-                .collect::<Vec<_>>();
-            let hand_type = hand_to_hand_type_with_joker(&cards);
-            Hand {
-                cards,
-                bid,
-                hand_type,
-            }
-        })
-        .collect::<Vec<_>>();
+    let mut hands = parse_hand(&file, true);
     hands.sort_unstable();
-    // dbg!(hands);
-    let total_winnings2: usize = hands
-        .iter()
-        .enumerate()
-        .map(|(i, hand)| hand.bid as usize * (i + 1))
-        .sum();
+    let res2 = total_winnings(&hands);
+
     let duration = start.elapsed();
     println!("Time elapsed in Part 2 is: {:?}", duration);
-    println!("Part 1: {}", total_winnings);
-    println!("Part 2: {}", total_winnings2);
+    println!("Part 1: {}", res1);
+    println!("Part 2: {}", res2);
 }
 
 #[cfg(test)]
