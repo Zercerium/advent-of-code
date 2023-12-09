@@ -1,9 +1,6 @@
 // Day 9: Mirage Maintenance
 
-use std::{
-    collections::{HashMap, HashSet, VecDeque},
-    time::Instant,
-};
+use std::{collections::VecDeque, time::Instant};
 
 fn main() {
     let file = aoc_util::read_input_file(2023, 9);
@@ -64,7 +61,7 @@ fn extrapolate(history: &[i64]) -> (i64, i64) {
         vec.push_front(new);
     }
 
-    dbg!(&extrapolate);
+    // dbg!(&extrapolate);
 
     (
         *extrapolate.first().unwrap().iter().last().unwrap(),
