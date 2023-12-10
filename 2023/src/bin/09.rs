@@ -1,6 +1,6 @@
 // Day 9: Mirage Maintenance
 
-use std::{collections::VecDeque, time::Instant};
+use std::time::Instant;
 
 fn main() {
     let file = aoc_util::read_input_file(2023, 9);
@@ -33,38 +33,36 @@ fn main() {
 
 fn extrapolate(history: &[i64]) -> (i64, i64) {
     let mut extrapolate = Vec::new();
-    extrapolate.push(VecDeque::from(history.to_vec()));
+    extrapolate.push(history.to_vec());
     loop {
         let mut last = extrapolate.iter().last().unwrap().clone();
         for i in 0..last.len() - 1 {
             last[i] = last[i + 1] - last[i];
         }
-        last.pop_back();
+        last.pop();
         extrapolate.push(last);
         if extrapolate.iter().last().unwrap().iter().all(|&n| n == 0) {
             break;
         }
     }
-    extrapolate.iter_mut().last().unwrap().push_back(0);
-    for i in (0..extrapolate.len() - 1).rev() {
-        let last = *extrapolate.get(i + 1).unwrap().iter().last().unwrap();
-        let vec = extrapolate.get_mut(i).unwrap();
-        let new = vec.iter().last().unwrap() + last;
-        vec.push_back(new);
-    }
 
-    extrapolate.iter_mut().last().unwrap().push_front(0);
-    for i in (0..extrapolate.len() - 1).rev() {
-        let first = *extrapolate.get(i + 1).unwrap().iter().next().unwrap();
-        let vec = extrapolate.get_mut(i).unwrap();
-        let new = vec.iter().next().unwrap() - first;
-        vec.push_front(new);
-    }
+    let part1;
+    let part2;
 
-    // dbg!(&extrapolate);
+    part1 = extrapolate
+        .iter()
+        .rev()
+        .map(|row| *row.iter().last().unwrap())
+        // .inspect(|n| println!("{}", n))
+        .reduce(|acc, b| b + acc)
+        .unwrap();
 
-    (
-        *extrapolate.first().unwrap().iter().last().unwrap(),
-        *extrapolate.first().unwrap().iter().next().unwrap(),
-    )
+    part2 = extrapolate
+        .iter()
+        .rev()
+        .map(|row| *row.iter().next().unwrap())
+        .reduce(|acc, b| b - acc)
+        .unwrap();
+
+    (part1, part2)
 }
