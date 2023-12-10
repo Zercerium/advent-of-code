@@ -1,6 +1,7 @@
 use std::path::{Path, PathBuf};
 
 pub mod map;
+pub use num;
 
 /// Read the input file for the given year and day.
 /// Will look for the file in the directory specified by the AOC_PATH environment variable
